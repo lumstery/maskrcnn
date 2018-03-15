@@ -27,9 +27,9 @@ import keras.layers as KL
 import keras.initializers as KI
 import keras.engine as KE
 import keras.models as KM
-
 import utils
-
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
 # Requires TensorFlow 1.3+ and Keras 2.0.8+.
 from distutils.version import LooseVersion
 assert LooseVersion(tf.__version__) >= LooseVersion("1.3")
@@ -1761,6 +1761,9 @@ class MaskRCNN():
         self.model_dir = model_dir
         self.set_log_dir()
         self.keras_model = self.build(mode=mode, config=config)
+        tfconfig = tf.ConfigProto()
+        tfconfig.gpu_options.per_process_gpu_memory_fraction = 0.3
+        set_session(tf.Session(config=tfconfig))
 
     def build(self, mode, config):
         """Build Mask R-CNN architecture.
